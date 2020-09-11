@@ -80,6 +80,27 @@ def token_func(text):
 f1_agreement = biaa.compute_f1_agreement('/path/to/brat/project' , token_func=token_func)
 ```
 
+### Inspecting disagreements
+
+You can use `F1AgreementView` to inspect the agreement: collect all matching and mismatching annotations for each document. 
+Then an extended agreement report can be displayed: in addition to numeric measures, exact disagreements will be displayed for each document:
+ 
+```python
+import bratiaa as biaa
+
+project = '/path/to/brat/project'
+
+# instance-level agreement
+f1_agreement = biaa.compute_f1_agreement(project)
+# find exact agreements & disagreements
+f1_agreement_view = biaa.F1AgreementView(project)
+
+# print extended agreement report: output all disagreements
+biaa.extended_iaa_report(f1_agreement, f1_agreement_view)
+```
+
+In similar to `compute_f1_agreement`, you can use parameter `token_func` in initialization of `F1AgreementView` to enable the token-level evaluation.  
+
 ### CLI
 Help message: `brat-iaa -h`
 
