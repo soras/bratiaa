@@ -4,6 +4,7 @@ import argparse
 
 from bratiaa.agree import iaa_report, compute_f1_agreement
 from bratiaa.utils import tokenize
+from bratiaa import extended_iaa_report, F1AgreementView
 
 
 def parse_args():
@@ -23,6 +24,9 @@ def parse_args():
     parser.add_argument('-t', '--tokenize',
                         help='Token-based evaluation (tokenizer splits on whitespace)',
                         action='store_true')
+    parser.add_argument('-v', '--view',
+                        help='Display all disagreements for each document',
+                        action='store_true')
     return parser.parse_args()
 
 
@@ -39,7 +43,13 @@ def main():
         token_func = tokenize
 
     f1_agreement = compute_f1_agreement(args.project_root, token_func=token_func)
-    iaa_report(f1_agreement, args.precision)
+    if not args.view:
+        # The default report
+        iaa_report(f1_agreement, args.precision)
+    else:
+        # The extended report: for each document, also displays all disagreements
+        f1_agreement_view = F1AgreementView(args.project_root, token_func=token_func)
+        extended_iaa_report(f1_agreement, f1_agreement_view)
     if args.heatmap_path:
         f1_agreement.draw_heatmap(args.heatmap_path)
 
